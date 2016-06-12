@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时钟</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="example"></div>
+
+
+    <script src="./js/react.min.js"></script>
+    <script src="./js/react-dom.min.js"></script>
+    <script src="./js/browser.min.js"></script>
+    <script type="text/babel">
+      var Clock=React.createClass({
+        getInitialState:function(){
+          var d=new Date();
+          return {h:d.getHours(),m:d.getMinutes(),s:d.getSeconds()}
+        },
+        componentDidMount:function(){
+          this.timer=setInterval(this.getTime,250);
+        },
+        getTime:function(){
+          var d=new Date();
+          var ds=d.getMilliseconds()>500?0.5:0;
+          var dm=Math.floor(d.getSeconds()/6)/10;
+          var dh=Math.floor(d.getMinutes()/6)/10;
+          this.setState({h:d.getHours()+dh,m:d.getMinutes()+dm,s:d.getSeconds()+ds});
+        },
+        render:function(){
+          return (
+          <div>
+            <div className="page0">
+              <svg viewBox="-80 -80 160 180" >
+                  <defs>
+                    <linearGradient id="svg0">
+                      <stop offset="0%"  style={{stopOpacity:"0.2",stopColor:"white"}}/>
+                      <stop offset="100%" style={{stopOpacity:"1",stopColor:"white"}}/>   
+                    </linearGradient>
+                  </defs>
+
+                <path d="M 0 -64 A 64 64 0 1 1 0 64 A 64 64 0 1 1 0 -64" style={{stroke:"white",strokeOpacity:"0.2",fill:"none"}} />
+                <text x="0" y="-64" fill="white" style={{fontSize:8,opacity:"0.5",textAnchor:"middle",alignmentBaseline:"central"}}>12</text>
+                <text x="64" y="0" fill="white" style={{fontSize:8,opacity:"0.5",textAnchor:"middle",alignmentBaseline:"central"}}>3</text>
+                <text x="0" y="64" fill="white" style={{fontSize:8,opacity:"0.5",textAnchor:"middle",alignmentBaseline:"central"}}>6</text>
+                <text x="-64" y="0" fill="white" style={{fontSize:8,opacity:"0.5",textAnchor:"middle",alignmentBaseline:"central"}}>9</text>
+                <text x="0" y="80" fill="white" style={{fontSize:8,opacity:"0.5",textAnchor:"middle",alignmentBaseline:"central"}}>中国标准时间</text>
+
+                <circle cx="0" cy="0" r="3" fill="transparent" style={{stroke:"white",strokeWidth:"2"}}></circle>
+                <path d="M 0 -50 A 50 50 0 1 1 -50 0" style={{stroke:"white",strokeOpacity:"0.2",strokeWidth:"8",strokeDasharray:"1.3089969389957472,1.3089969389957472",fill:"none",transform:"rotateZ("+this.state.s*6+"deg)"}}/>
+                <path d="M -50 0 A 50 50 0 0 1 0 -50" style={{stroke:"url(#svg0)",strokeWidth:"8",strokeDasharray:"1.3089969389957472,1.3089969389957472",fill:"none",transform:"rotateZ("+this.state.s*6+"deg)"}}/>
+                <path d="M 0 -46 L -3 -40 L 3 -40 Z" style={{fill:"white",transform:"rotateZ("+this.state.s*6+"deg)"}} />
+                <path d="M 0 -4 L 0 -40" style={{stroke:"white",strokeWidth:"2",strokeOpacity:"1",transform:"rotateZ("+this.state.m*6+"deg)"}} />
+                <path d="M 0 -4 L 0 -30" style={{stroke:"white",strokeWidth:"2",strokeOpacity:"0.5",transform:"rotateZ("+this.state.h*30+"deg)"}} />
+              </svg>
+            </div>
+            <div className="row"></div>
+            <div className="row"></div>
+            <div className="row"></div>
+          </div>
+          );
+        }
+      });
+
+      var Timer=React.createClass({
+        getInitialState:function(){
+          return {lastTime:0,totalTime:0,logs:[],state:'init'}
+        },
+        handleButton1:function(){
+          if(this.state.state==='run'){
+            this.setState({state:'pause'});
+            clearInterval(this.timer);
+          }
+          else{
+            this.setState({lastTime:Date.now(),state:'run'});
+            this.timer=setInterval(this.getTime,10);
+          }
+        },
+        handleButton2:function(){
+          if(this.state.state==='run'){
+            this.state.logs.push((this.state.totalTime/1000).toFixed(1));
+            this.setState({logs:this.state.logs});
+          }
+          else{
+            this.setState({lastTime:0,totalTime:0,logs:[],state:'init'});
+          }
+        },
+        getTime:function(){
+          this.setState({lastTime:Date.now(),totalTime:this.state.totalTime+Date.now()-this.state.lastTime});
+        },
+        render:function(){
+          var rows=[];
+          var that=this;
+          this.state.logs.forEach(function(element,index){
+            if(index){
+              rows.push(<div className="row" key={index}><span>{index+1}<sup>计次</sup></span><span>{element}</span><span>{'+'+Math.round((that.state.logs[index]-that.state.logs[index-1])*10)/10}</span></div>);
+            }
+            else{
+              rows.push(<div className="row" key={index}><span>{index+1}<sup>计次</sup></span><span>{element}</span><span>{'+'+that.state.logs[index]}</span></div>);
+            }
+            
+          });
+          rows.reverse();
+          if(rows.length<3){
+          for(var i=rows.length;i<3;i++){
+            rows.push(<div className="row" key={i}></div>);
+          }
+          }
+
+          var arg0=this.state.totalTime/1000>Math.floor(this.state.totalTime/1000)+0.5?Math.floor(this.state.totalTime/1000)+0.5:Math.floor(this.state.totalTime/1000);
+          var arg1=this.state.totalTime/1000*360%360;
+
+          return (
+          <div>
+            <div className="page1">
+              <svg viewBox="-80 -80 160 180" >
+                <defs>
+                  <linearGradient id="svg1">
+                    <stop offset="0%"  style={{stopOpacity:"0.2",stopColor:"white"}}/>
+                    <stop offset="100%" style={{stopOpacity:this.state.state==='run'?'1':'0.2',stopColor:"white"}}/>   
+                  </linearGradient>
+                </defs>
+
+                <circle cx="0" cy="25" r="9" fill="transparent" style={{stroke:"white",strokeWidth:"0.1"}}></circle>
+                <circle cx="0" cy="25" r="1" fill="transparent" style={{stroke:"white",strokeWidth:"0.3"}}></circle>
+
+                <path d="M 0 24 L 0 17" style={{stroke:"white",strokeWidth:"0.3",strokeOpacity:"1",transformOrigin:"0px 25px 0px",transform:"rotateZ("+arg1+"deg)"}} />
+
+                <path d="M 0 -50 A 50 50 0 1 1 -50 0" style={{stroke:"white",strokeOpacity:"0.2",strokeWidth:"8",strokeDasharray:"1.3089969389957472,1.3089969389957472",fill:"none",transform:"rotateZ("+arg0*6+"deg)"}}/>
+                <path d="M -50 0 A 50 50 0 0 1 0 -50" style={{stroke:"url(#svg1)",strokeWidth:"8",strokeDasharray:"1.3089969389957472,1.3089969389957472",fill:"none",transform:"rotateZ("+arg0*6+"deg)"}}/>
+                <path d="M 0 -54 L -3 -60 L 3 -60 Z" style={{fill:"white",transform:"rotateZ("+this.state.totalTime/1000*6+"deg)"}} />
+
+                <text x="0" y="0" fill="white" style={{opacity:"1",textAnchor:"middle",alignmentBaseline:"central"}}>{(this.state.totalTime/1000).toFixed(1)}</text>
+              </svg>
+            </div>
+            <div id="logs">
+              {rows}
+            </div>
+            
+            <button className={this.state.state==='init'?'centerbutton':'leftbutton'} onClick={this.handleButton1}>{this.state.state==='run'?'暂停':'开始'}</button>
+            <button className="rightbutton" onClick={this.handleButton2} style={{display:this.state.state==='init'?'none':'inline-block'}}>{this.state.state==='run'?'计次':'重置'}</button>
+          </div>
+          );
+        }
+      });
+
+      var App=React.createClass({
+        getInitialState:function(){
+          return {page:0}
+        },
+        handleButton1:function(){
+          this.setState({page:0});
+        },
+        handleButton2:function(){
+          this.setState({page:1});
+        },
+        render:function(){
+          return (
+          <div>
+          <div id="top" className={"page"+this.state.page}>
+            <button className={"topbutton "+"page"+this.state.page} onClick={this.handleButton1}>时钟</button>
+            <button className={"topbutton "+"page"+this.state.page} onClick={this.handleButton2}>秒表</button>
+          </div>
+          <div style={{display:this.state.page===0?'block':'none'}}>
+            <Clock />
+          </div>
+          <div style={{display:this.state.page===1?'block':'none'}}>
+            <Timer />
+          </div>
+          </div>
+          );
+        }
+      });
+
+      ReactDOM.render(
+        <App />,
+        document.getElementById('example')
+      );
+    </script>
+  </body>
+</html>

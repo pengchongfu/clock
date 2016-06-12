@@ -1,0 +1,85 @@
+body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.page0 {
+    background: #237ead;
+}
+
+.page1 {
+    background: #369445;
+}
+
+button {
+    margin-top: 15px;
+    height:30px;
+    outline: none;
+}
+
+.topbutton {
+    color:white;
+    border: none;
+}
+
+svg {
+    height: 300px;
+    width: 300px;
+}
+.row {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    height:60px;
+    width: 90%;
+    border-color: rgba(0,0,0,0.1);
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+}
+
+#logs {
+    height:185px;
+    overflow-y: scroll;
+}
+
+::-webkit-scrollbar{width:0px;}
+
+
+.leftbutton {
+    width:100px;
+    color:gray;
+    background: white;
+    border: 1px solid #aaa;
+    border-right-width: 1px;
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+}
+
+.rightbutton {
+    width:100px;
+    color:gray;
+    background: white;
+    border: 1px solid #aaa;
+    border-left-width: 0px;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.centerbutton {
+    width:200px;
+    color:gray;
+    background: white;
+    border: 1px solid #aaa;
+    border-radius: 15px;
+}
+
+.row span {
+    height:20px;
+    flex:1;
+}
+
+.row span:nth-child(3){
+    border: 1px solid #aaa;
+    border-radius: 10px;
+}
